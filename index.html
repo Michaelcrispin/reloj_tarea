@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reloj Espejo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #1a1a2e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #a0c4ff;
+  }
+
+  .form {
+    background: #16213e;
+    padding: 2rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  .inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 2rem;
+  }
+
+  input[type="number"] {
+    width: 80px;
+    font-size: 2rem;
+    text-align: center;
+    padding: 0.3rem;
+    border: 2px solid #a0c4ff;
+    border-radius: 8px;
+    background: #0f3460;
+    color: white;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  button {
+    background: #a0c4ff;
+    color: #1a1a2e;
+    border: none;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: #74b0f4; }
+
+  .resultado {
+    margin-top: 2rem;
+    text-align: center;
+    display: none;
+  }
+
+  .resultado p {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin-bottom: 0.5rem;
+  }
+
+  .hora-espejo {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #ffd166;
+    letter-spacing: 0.05em;
+  }
+
+  .error {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>🪞 Reloj Espejo</h1>
+
+<div class="form">
+  <div class="inputs">
+    <input type="number" id="hora" min="0" max="23" placeholder="HH">
+    <span>:</span>
+    <input type="number" id="minuto" min="0" max="59" placeholder="MM">
+  </div>
+  <button onclick="calcular()">Calcular</button>
+  <div class="error" id="error">⚠ Valores inválidos</div>
+</div>
+
+<div class="resultado" id="resultado">
+  <p>Tu hora espejo es:</p>
+  <div class="hora-espejo" id="espejo"></div>
+</div>
+
+<script>
+  function calcular() {
+    const h = parseInt(document.getElementById('hora').value);
+    const m = parseInt(document.getElementById('minuto').value);
+    const errorEl = document.getElementById('error');
+    const resultEl = document.getElementById('resultado');
+
+    errorEl.style.display = 'none';
+    resultEl.style.display = 'none';
+
+    if (isNaN(h) || isNaN(m) || h < 0 || h > 23 || m < 0 || m > 59) {
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    let hh = h % 12;
+    let hf, mf;
+
+    if (m === 0) {
+      mf = 0;
+      hf = 12 - hh;
+    } else {
+      mf = 60 - m;
+      hf = 12 - hh - 1;
+    }
+
+    if (hf <= 0) hf += 12;
+    if (hf === 0) hf = 12;
+
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('espejo').textContent = `${pad(hf)}:${pad(mf)}`;
+    resultEl.style.display = 'block';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') calcular();
+  });
+</script>
+
+</body>
+</html>
